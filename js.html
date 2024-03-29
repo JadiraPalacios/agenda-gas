@@ -5,8 +5,14 @@
         let tabla = document.getElementById('tablaContactos');
         if(tabla) tabla.remove();
 
-        google.script.run.withSuccessHandler(
-            function(obj)
+        google.script.run
+        .withSuccessHandler(crearTablaContactosCorrectamente)
+        .withFailureHandler(crearTablaContactosError)
+        .obtenerContactos();
+    }
+
+
+function crearTablaContactosCorrectamente(obj)
             {
                 tabla = document.createElement('table');
                 tabla.id = 'tablaContactos';
@@ -35,26 +41,7 @@
                 }
 
 
-                // Array.from(obj).forEach((filaActual, i) =>
-                // {
-                //     let fila = document.createElement('tr');
-                //     filaActual.forEach(celdaActual =>
-                //     {
-                //         let celda = document.createElement('td');
-                //         celda.textContent = celdaActual;
-                //         fila.appendChild(celda);
-                //     });
-                //     if(i == 0)
-                //     {
-                //         tablaHeader.appendChild(fila);
-                //         tabla.appendChild(tablaHeader);
-                //     }
-                //     else
-                //     {
-                //         tablaBody.appendChild(fila);
-                //     }
-                // });
-                
+             
                 //agregamos clases a la cabecera
                 tablaHeader.classList.add('table-dark')
                 //agregamos el cuerpo a la tabla
@@ -63,10 +50,37 @@
                 tabla.classList.add('table', 'table-striped', 'border', 'border-3');
                 //agregamos tabla a la pagina
                 document.getElementById('divContactos').appendChild(tabla);
+                
+                
+                //mostrar notificacion de ok
+                crearNotificacion(1,'contactos obtenidos correctamente','todo en orden')
 
             }
-        ).obtenerContactos();
-    }
 
+function crearTablaContactosError()
+{
+    //mostrar notificaion de error
+}
+ function crearNotificacion(tipo,mensaje,titulo)
+ {
+    //obtenemos datos
+    let textoNotificacion=document.getElementById('mensajenotificacion');
+    let tituloNotificacion=document.getElementById('tituloNotificacion');
+    let elememtNotificacion=document.getElementById('notificacion');
+    let iconoNotificacion=document.getElementById('iconoNotificacion');
+    let notificacion=bootstrap.Toast.getOrCreateInstance(elememtoNotificacion);
+
+    //editar la notificacion
+    iconoNotificacion.className='';
+    iconoNotificacion.classList.add('bi','bi-check2-square');
+    mensajeNotificacion.textContent=mensaje;
+    tituloNotificacion.textContent=titulo;
+    elememtoNotificacion.style.backgroundColor=getComputedStyle(document.documentElement)
+    .getPropertyValue('--color-verde-oscuro');
+
+    //mostrar notificacion
+    notificacion.show();
+
+ }
 
 </script>
